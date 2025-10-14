@@ -23,7 +23,7 @@ class RCCServiceSoap {
 		$this->ip = $url;
 		$this->port = $port;
 		$this->url = $url.$port;
-		$this->SoapClient = new \SoapClient(__DIR__."\RCCService.wsdl", ["location" => "http://".$url.":".$port, "uri" => "http://roblox.com/", "classmap" => $this->classmap, "exceptions" => false]);
+		$this->SoapClient = new \SoapClient("http://www.rochao.xyz/RCCService.wsdl", ["location" => "http://".$url.":".$port, "uri" => "http://rochao.xyz/", "classmap" => $this->classmap, "exceptions" => false]);
 	}
 
 	// Begin function handlers
@@ -73,7 +73,8 @@ class RCCServiceSoap {
 	 * ]
 	 */
 	function OpenJob($job, $script = null) {
-		return $this->OpenJobEx($job, $script);
+		$result = $this->callToService(__FUNCTION__, ["job" => $job, "script" => $script]);
+		return RCCServiceSoap::parseJobResult($result);
 	}
 	
 	/**
