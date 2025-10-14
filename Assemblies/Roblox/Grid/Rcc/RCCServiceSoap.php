@@ -23,7 +23,7 @@ class RCCServiceSoap {
 		$this->ip = $url;
 		$this->port = $port;
 		$this->url = $url.$port;
-		$this->SoapClient = new \SoapClient("http://www.rochao.xyz/RCCService.wsdl", ["location" => "http://".$url.":".$port, "uri" => "http://rochao.xyz/", "classmap" => $this->classmap, "exceptions" => false]);
+		$this->SoapClient = new \SoapClient(__DIR__."\RCCService.wsdl", ["location" => "http://".$url.":".$port, "uri" => "http://roblox.com", "classmap" => $this->classmap, "exceptions" => false]);
 	}
 
 	// Begin function handlers
@@ -36,9 +36,13 @@ class RCCServiceSoap {
 	}
 	
 	private static function parseJobResult($value) {
-		if ($value !== new \stdClass() && isset($value->LuaValue)) {
+		if ($value !== new \stdClass() && !is_soap_fault($value)) {
 			// Our job result isn't empty, so let's deserialize it
-			$result = LuaValue::deserializeValue($value->LuaValue);
+			if (isset($value->LuaValue)) {
+				$result = LuaValue::deserializeValue($value->LuaValue);
+			} else if (isset($value) || isset($value->type)) {
+					$result = LuaValue::deserializeValue($value);
+			}
 		}else {
 			// Something went wrong :(
 			$result = null;
