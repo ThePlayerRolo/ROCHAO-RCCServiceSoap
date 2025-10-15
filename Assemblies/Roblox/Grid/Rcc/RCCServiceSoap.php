@@ -36,6 +36,7 @@ class RCCServiceSoap {
 	}
 	
 	private static function parseJobResult($value) {
+		$result = null;
 		if ($value !== new \stdClass() && !is_soap_fault($value)) {
 			// Our job result isn't empty, so let's deserialize it
 			if (isset($value->LuaValue)) {
@@ -43,9 +44,6 @@ class RCCServiceSoap {
 			} else if (isset($value) || isset($value->type)) {
 					$result = LuaValue::deserializeValue($value);
 			}
-		}else {
-			// Something went wrong :(
-			$result = null;
 		}
 		return $result;
 	}
